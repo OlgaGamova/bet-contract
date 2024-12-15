@@ -91,7 +91,8 @@ contract YourContract {
             // Первый участник побеждает
             uint256 prize = bet1.amount + bet2.amount;
             payable(bet1.player).transfer(prize);
-            emit WinnerDeclared(bet1.player, prize);
+            
+            //emit WinnerDeclared(bet1.player, prize);
         } else if (diff2 < diff1) {
             // Второй участник побеждает
             uint256 prize = bet1.amount + bet2.amount;
