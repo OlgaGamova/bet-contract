@@ -9,7 +9,7 @@ import { useAccount } from "wagmi";
 
 // ABI вашего контракта
 
-const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Замените на ваш адрес контракта
+const CONTRACT_ADDRESS = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"; // Замените на ваш адрес контракта
 const RPC_URL = "http://localhost:8545"; // URL вашего локального провайдера
 
 const Home: NextPage = () => {
@@ -44,6 +44,18 @@ const Home: NextPage = () => {
     } catch (error: any) {
       console.error(error);
       alert(`Failed to place bet: ${error.message}`);
+    }
+  };
+  // Функция розыгрыша
+  const settleBet = async () => {
+    try {
+      const contract = await getContractWithSigner();
+      const tx = await contract.settleBet();
+      await tx.wait();
+      alert("Game finished successfully!");
+    } catch (error: any) {
+      console.error(error);
+      alert(`Failed to settle bet: ${error.message}`);
     }
   };
 
@@ -104,6 +116,18 @@ const Home: NextPage = () => {
             </div>
             <button type="submit" className="btn btn-primary">
               Place Bet
+            </button>
+          </form>
+
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              settleBet();
+            }}
+            className="space-y-4"
+          >
+            <button type="submit" className="btn btn-primary">
+              Settle Bet
             </button>
           </form>
         </div>
