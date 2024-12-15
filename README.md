@@ -1,88 +1,45 @@
-# 🏗 Scaffold-ETH 2
+RecurringCurrencyBet — это смарт-контракт, который позволяет двум участникам делать ставки на курс валюты (USD/EUR). Участники вносят ставки в ETH и указывают свой прогноз курса. Победителем становится тот, чей прогноз ближе к фактическому курсу, который предоставляется через надёжный оракул (например, Chainlink).
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+Контракт поддерживает многоразовое использование: новые раунды ставок могут начинаться каждый день. Каждый раунд имеет своё время окончания и расчёта, что гарантирует независимость и справедливость.
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+Основные возможности
+Размещение ставок:
 
-⚙️ Built using NextJS, RainbowKit, Foundry/Hardhat, Wagmi, Viem, and Typescript.
+Участники делают ставки в ETH и указывают свой прогноз курса.
+Ставка второго участника должна соответствовать сумме ставки первого.
+Управление дедлайнами:
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+Ставки принимаются до конца текущего дня по UTC.
+Результаты вычисляются в 9 утра следующего дня по UTC, используя курс от оракула.
+Определение победителя:
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+Побеждает участник, чей прогноз ближе к фактическому курсу.
+В случае ничьей оба участника получают возврат своих ставок (за вычетом комиссии за газ).
+Автоматический сброс данных:
 
-## Requirements
+Если ставки сделаны после завершения предыдущего раунда, данные предыдущих ставок автоматически очищаются.
+Механизм возврата:
 
-Before you begin, you need to install the following tools:
+Если второй участник не делает ставку до дедлайна, первый участник получает возврат своей ставки (за вычетом газа).
+Интеграция с оракулом:
 
-- [Node (>= v18.18)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+Контракт использует данные от надёжного оракула, такого как Chainlink, для получения актуального курса валют.
+Как работает
+Инициализация:
 
-## Quickstart
+Контракт разворачивается с адресом оракула (например, Chainlink) в качестве параметра.
+Размещение ставок:
 
-To get started with Scaffold-ETH 2, follow the steps below:
+Первый участник вызывает метод placeBet с суммой ставки и прогнозом курса.
+Второй участник также вызывает placeBet, внося ту же сумму ставки и свой прогноз.
+Обработка дедлайнов:
 
-1. Install the latest version of Scaffold-ETH 2
+Если дедлайн истёк, а ставки не были завершены, первый участник получает возврат.
+Расчёт результата:
 
-```
-npx create-eth@latest
-```
+После наступления времени результата (9:00 UTC следующего дня) любой из участников может вызвать метод settleBet.
+Контракт получает фактический курс от оракула и определяет победителя.
+Выплата выигрыша:
 
-This command will install all the necessary packages and dependencies, so it might take a while.
-
-> [!NOTE]
-> You can also initialize your project with one of our extensions to add specific features or starter-kits. Learn more in our [extensions documentation](https://docs.scaffoldeth.io/extensions/).
-
-2. Run a local network in the first terminal:
-
-```
-yarn chain
-```
-
-This command starts a local Ethereum network that runs on your local machine and can be used for testing and development. Learn how to [customize your network configuration](https://docs.scaffoldeth.io/quick-start/environment#1-initialize-a-local-blockchain).
-
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
-```
-
-This command deploys a test smart contract to the local network. You can find more information about how to customize your contract and deployment script in our [documentation](https://docs.scaffoldeth.io/quick-start/environment#2-deploy-your-smart-contract).
-
-4. On a third terminal, start your NextJS app:
-
-```
-yarn start
-```
-
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
-
-**What's next**:
-
-Visit the [What's next section of our docs](https://docs.scaffoldeth.io/quick-start/environment#whats-next) to learn how to:
-
-- Edit your smart contracts
-- Edit your deployment scripts
-- Customize your frontend
-- Edit the app config
-- Writing and running tests
-- [Setting up external services and API keys](https://docs.scaffoldeth.io/deploying/deploy-smart-contracts#configuration-of-third-party-services-for-production-grade-apps)
-
-## Documentation
-
-Visit our [docs](https://docs.scaffoldeth.io) to learn all the technical details and guides of Scaffold-ETH 2.
-
-To know more about its features, check out our [website](https://scaffoldeth.io).
-
-## Contributing to Scaffold-ETH 2
-
-We welcome contributions to Scaffold-ETH 2!
-
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+Победитель получает весь банк (ETH обоих участников).
+В случае ничьей оба участника получают возврат ставок (за вычетом газа).
