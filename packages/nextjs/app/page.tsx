@@ -7,10 +7,10 @@ import { Contract, JsonRpcProvider, parseEther } from "ethers";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 
-// ABI вашего контракта
+// ABI контракта
 
-const CONTRACT_ADDRESS = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"; // Замените на ваш адрес контракта
-const RPC_URL = "http://localhost:8545"; // URL вашего локального провайдера
+const CONTRACT_ADDRESS = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"; // Адрес контракта
+const RPC_URL = "http://localhost:8545"; // URL локального провайдера
 
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
