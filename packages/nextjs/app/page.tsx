@@ -1,6 +1,6 @@
 "use client";
 
-//import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+// import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import deplContracts from "../contracts/deployedContracts";
 import { Contract, JsonRpcProvider, parseEther } from "ethers";
@@ -9,7 +9,7 @@ import { useAccount } from "wagmi";
 
 // ABI контракта
 
-const CONTRACT_ADDRESS = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"; // Адрес контракта
+const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Адрес контракта
 const RPC_URL = "http://localhost:8545"; // URL локального провайдера
 
 const Home: NextPage = () => {
@@ -46,6 +46,7 @@ const Home: NextPage = () => {
       alert(`Failed to place bet: ${error.message}`);
     }
   };
+
   // Функция розыгрыша
   const settleBet = async () => {
     try {
@@ -85,36 +86,36 @@ const Home: NextPage = () => {
           </div>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-8 flex flex-col items-center">
           <h2 className="text-xl font-bold mb-4">Place a Bet</h2>
           <form
             onSubmit={e => {
               e.preventDefault();
               placeBet();
             }}
-            className="space-y-4"
+            className="space-y-4 flex flex-col items-center w-full max-w-xs"
           >
-            <div>
+            <div className="w-full">
               <label className="block text-sm font-medium">Bet Amount (ETH):</label>
               <input
                 type="text"
                 value={betAmount}
                 onChange={e => setBetAmount(e.target.value)}
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full"
                 required
               />
             </div>
-            <div>
+            <div className="w-full">
               <label className="block text-sm font-medium">Predicted Rate (USD/EUR):</label>
               <input
                 type="text"
                 value={predictedRate}
                 onChange={e => setPredictedRate(e.target.value)}
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full"
                 required
               />
             </div>
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary w-full">
               Place Bet
             </button>
           </form>
@@ -124,24 +125,26 @@ const Home: NextPage = () => {
               e.preventDefault();
               settleBet();
             }}
-            className="space-y-4"
+            className="space-y-4 flex flex-col items-center w-full max-w-xs mt-6"
           >
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary w-full">
               Settle Bet
             </button>
           </form>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-8 w-full max-w-lg text-center">
           <h2 className="text-xl font-bold mb-4">Contract State</h2>
-          <button onClick={fetchContractState} className="btn btn-secondary mb-4">
-            Fetch State
-          </button>
-          {contractState && (
-            <pre className="p-4 bg-gray-100 rounded-lg">
-              {JSON.stringify(contractState, (key, value) => value.toString())}
-            </pre>
-          )}
+          <div className="flex flex-col items-center">
+            <button onClick={fetchContractState} className="btn btn-secondary w-48 mb-4">
+              Fetch State
+            </button>
+            {contractState && (
+              <pre className="p-4 bg-gray-100 rounded-lg w-full max-w-full whitespace-pre-wrap break-words">
+                {JSON.stringify(contractState, (key, value) => value.toString(), 2)}
+              </pre>
+            )}
+          </div>
         </div>
       </div>
     </>
